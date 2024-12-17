@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng Điện Thoại</title>
+
+    <!-- Thêm Font Awesome vào head -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Animation thêm vào */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animation cho giỏ hàng */
+        #cart-container {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #cart-container.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        #cart-container.hide {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        #checkout-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #checkout-button:hover {
+            background-color: #4c51bf;
+            transform: scale(1.05);
+        }
+
+        /* Hiệu ứng cho biểu tượng giỏ hàng khi có sản phẩm */
+        #cart-icon {
+            transition: transform 0.2s ease;
+        }
+
+        #cart-item-count {
+            animation: bounce 0.3s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Media Queries tùy chỉnh */
+        @media (max-width: 640px) {
+            #cart-icon {
+                top: 8px;
+                right: 8px;
+            }
+
+            #product-container {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div>
+        <h1 class="text-3xl font-bold mb-4 p-5 text-white bg-gray-800">
+        <a href="#" class="text-7xl text-yellow-400 ml-5 cursor-pointer ">
+            <i class="fa-brands fa-mix"></i>
+        </a>
+        Nhựt Minh Mobile
+        </h1>
+    </div>
+    
+    <div class="container mx-auto p-4">
+        <div class="w-36">
+            <a href="../indexUser.html" class=" p-2 text-white rounded-full bg-gray-800 hover:bg-gray-700">
+                <i class="fa-solid fa-reply"></i> Trở lại
+            </a>
+        </div>
+
+        <div class="mb-4 text-center">
+            <label for="product-filter" class="mr-2">Lọc theo loại:</label>
+            <select id="product-filter" onchange="filterProducts()" class="px-3 border rounded">
+                <option value="">Tất cả</option>
+                <option value="iphone">iPhone</option>
+                <option value="samsung">Samsung</option>
+            </select>
+        </div>
+
+        <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Các sản phẩm sẽ được hiển thị ở đây -->
+            <div class="product-card bg-white p-4 rounded-lg shadow-md">
+                <!-- Thông tin sản phẩm -->
+            </div>
+        </div>
+
+        <!-- Biểu tượng giỏ hàng -->
+        <div id="cart-icon" class="fixed top-16 right-4 bg-gray-800 text-white p-2 rounded-full cursor-pointer shadow-lg flex  hover:bg-gray-700 transition duration-200 transform hover:scale-105 hover:shadow-md	">
+            <label class="cursor-pointer mr-2" for="cart-icon">Giỏ hàng</label>
+            <i class="fas fa-shopping-cart text-xl"></i>
+            <span id="cart-item-count" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+        </div>
+
+        <!-- Giỏ hàng -->
+        <div id="cart-container" class="hidden fixed top-16 right-4 bg-white shadow-lg rounded-lg w-full sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4 p-6">
+            <h2 class="text-xl font-bold mb-4">Giỏ hàng</h2>
+            <div id="cart-items" class="space-y-3">
+                <!-- Các mục giỏ hàng sẽ được hiển thị ở đây -->
+            </div>
+            <div class="flex justify-between mt-4">
+                <h3 class="font-semibold text-lg">Tổng tiền: $<span id="total-price">0</span></h3>
+                <button id="checkout-button" class="bg-indigo-600 text-white text-sm py-2 px-4 rounded-lg">Thanh Toán</button>
+            </div>
+            <div>
+                <button id="close-cart" class="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg w-full">Đóng</button>
+                <div id="payment-successful" class="hidden bg-green-500 text-white p-4 rounded mt-2"></div>
+                <div id="payment-failed" class="hidden bg-red-500 text-white p-4 rounded mt-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2024 Nhựt Minh Mobile. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="text-yellow-400 hover:text-white mx-2"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-yellow-400 hover:text-white mx-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-yellow-400 hover:text-white mx-2"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="./services/productDisplay.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+   
+    
+
+    <style>
+        /* CSS cho modal */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex">
+       
+        <nav class="bg-gray-800 text-white w-64 min-h-screen">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold">Quản lý sản phẩm</h3>
+            </div>
+            <ul class="list-none">
+                <li class="active">
+                    <a href="../customer/homePage.html" class="block p-4 hover:bg-gray-700">
+                        <i class="fa fa-home"></i> Cửa Hàng
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="../indexUser.html" class="block p-4 hover:bg-gray-700">
+                        <i class="fa-solid fa-reply"></i> Trở lại
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+      
+        <div class="flex-1 p-4">
+            <nav class="bg-white shadow">
+                <div class="flex justify-between items-center p-4">
+                    <h3 class="text-lg font-bold text-blue-600">Danh sách sản phẩm</h3>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded" id="btnThem">Thêm sản phẩm</button>
+                </div>
+            </nav>
+
+            <div class="container mx-auto mt-4">
+                <div class="bg-white shadow rounded-lg">
+                    <div class="p-4">
+                        <div class="mb-4">
+                            <div class="flex items-center">
+                                <input type="text" class="form-control border rounded-lg px-4 py-2 w-full" placeholder="Tìm kiếm sản phẩm" id="searchName">
+                                <div class="input-group-prepend ml-2 mr-2 ">
+                                    <span class="input-group-text bg-blue-500 text-white rounded px-4 py-2 cursor-pointer " id="btnTimSP"><i class="fa fa-search"></i></span>
+                                </div>
+                                <div class="flex justify-end space-x-4 mb-2">
+                                    <select id="sortPrice" class="border-gray-300   outline-none cursor-pointer">
+                                        <option value="">-- Sắp xếp giá --</option>
+                                        <option value="asc">Giá tăng dần</option>
+                                        <option value="desc">Giá giảm dần</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <table class="min-w-full bg-white border border-gray-300  ">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th class="border px-4 py-2  ">Hình ảnh</th>
+                                    <th class="border px-4 py-2  ">Tên sản phẩm</th>
+                                    <th class="border px-4 py-2  ">Giá</th>
+                                    <th class="border px-4 py-2  ">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableDanhSach" class="font-bold text-center ">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <header class="head-form mb-0">
+                    <h2 id="header-title" class="text-center">Thêm sản phẩm</h2>
+                </header>
+
+                
+                <div class="modal-body bg-gray-100 p-6 rounded-lg shadow-md transform transition-transform duration-300 scale-95 hover:scale-100">
+                
+                    <form id="productForm" class="space-y-6">
+                        <div class="form-group">
+                            <input type="text" id="productName" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Tên sản phẩm" required>
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productName"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="productPrice" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Giá" required>
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productPrice"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="productScreen" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Màn hình">
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productScreen"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="productBackCamera" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Camera sau">
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productBackCamera"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="productFrontCamera" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Camera trước">
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productFrontCamera"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="productImg" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Hình ảnh">
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productImg"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="productDesc" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Mô tả">
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productDesc"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="productType" class="form-control border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm text-lg rounded-md" placeholder="Loại">
+                            <span class="sp-thongbao text-red-500 text-sm" id="error-productType"></span>
+                        </div>
+                    </form>
+                </div>
+                
+
+                <div class="modal-footer" id="modal-footer">
+                    <button id="btnAddProduct" type="button" class="bg-green-500 text-white px-4 py-2 rounded">Thêm sản phẩm</button>
+                    <button id="btnUpdateProduct" type="button" class="bg-blue-500 text-white px-4 py-2 rounded" style="display:none;">Cập nhật</button>
+                    <button id="btnClose" type="button" class="bg-red-500 text-white px-4 py-2 rounded" onclick="closeModal()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="module" src="./indexQL.js"></script>
+</body>
